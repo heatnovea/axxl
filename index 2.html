@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axxl AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #001f3d;
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .chatbox {
+            width: 100%;
+            max-width: 600px;
+            height: 500px;
+            background-color: #0a2a51;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+            overflow-y: scroll;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #1a3b61;
+        }
+
+        .message-user {
+            background-color: #007bff;
+            align-self: flex-end;
+        }
+
+        .message-ai {
+            background-color: #38b7c1;
+            align-self: flex-start;
+        }
+
+        .input-container {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background-color: #003d66;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            background-color: #005e8c;
+        }
+
+        button {
+            background-color: #38b7c1;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            color: white;
+            font-size: 16px;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .wave-container {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            height: 3px;
+        }
+
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: waveAnimation 1.5s infinite;
+        }
+
+        @keyframes waveAnimation {
+            0% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Scrollbar styles */
+        .chatbox::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chatbox::-webkit-scrollbar-thumb {
+            background-color: #38b7c1;
+            border-radius: 10px;
+        }
+
+        .chatbox::-webkit-scrollbar-track {
+            background: #0a2a51;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chatbox" id="chatbox">
+            <div class="message message-ai">Hello there! I am Axxl AI, here to assist you!</div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Ask me something..." oninput="adjustInputWidth()">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        <div class="loading" id="loading">
+            <div class="wave-container">
+                <div class="wave"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let loading = false;
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            if (userInput.trim() === '' || loading) return;
+
+            const chatbox = document.getElementById('chatbox');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message message-user';
+            userMessage.textContent = userInput;
+            chatbox.appendChild(userMessage);
+            
+            document.getElementById('userInput').value = '';
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            startLoading();
+            setTimeout(() => {
+                respondToUser(userInput);
+            }, 2000); // Simulate response time
+        }
+
+        function startLoading() {
+            loading = true;
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function stopLoading() {
+            loading = false;
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function respondToUser(input) {
+            stopLoading();
+            const chatbox = document.getElementById('chatbox');
+            const aiMessage = document.createElement('div');
+            aiMessage.className = 'message message-ai';
+
+            let response = 'I am not sure how to respond to that. Can you ask something else?';
+
+            if (input.toLowerCase().includes('hello')) {
+                response = "Its time to help you out! What may I help with?";
+            } else if (input.toLowerCase().includes('games')) {
+                response = "I love games like Lunaar! Do you play that?";
+            } else if (input.toLowerCase().includes('favorite')) {
+                response = "My favorite ice cream flavors are chocolate chip cookie dough and banana pudding. And I love strawberries!";
+            } else if (input.toLowerCase().includes('20 questions')) {
+                response = "I’d love to play 20 questions with you!";
+            }
+
+            aiMessage.textContent = response;
+            chatbox.appendChild(aiMessage);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function adjustInputWidth() {
+            const input = document.getElementById('userInput');
+            input.style.width = (input.value.length + 1) * 10 + 'px';
+        }
+    </script>
+</body>
+</html>
